@@ -1,34 +1,38 @@
-# Compiler Visualizer
+# Bring Knowledge Home
 
-Học compiler bằng cách sửa source, xem từng pha và đối chiếu kết quả với source.
+A personal workspace for turning what I learn into something I can explain, build, and improve.
 
-```sh
-make build
-make run
-```
+The goal is to bring knowledge home: capture useful ideas, rebuild the systems behind them, and optimize those implementations through experiments and measurement.
 
-Mở URL server in ra (mặc định tìm port trống trong 8100–8999). Cần Python 3,
-GCC, Make và GNU binutils trên Linux x86-64; không cần thư viện Python ngoài.
+## Learn and document
 
-- **C Compiler**: tokens, cây AST, scopes, IR, tối ưu, assembly, GCC/ELF inspector và chạy chương trình.
-- **Compiler Lab**: giao diện chung cho compiler adapters; Back/Next, thanh chọn bước,
-  highlight source và snapshot từng pha. Có Mini C và compiler biểu thức độc lập.
-- **AI Compiler**: backend MiniTensor đã có parser, graph, fusion, loop IR và C codegen;
-  tab giao diện hiện còn là placeholder.
+Keep notes on concepts, design decisions, and lessons learned. Record examples, references, mistakes, and open questions so the reasoning remains useful beyond the first implementation.
 
-Trong Compiler Lab, chọn **Mini C**, bật **O1**, rồi compile để xem các biến đổi
-before/after của optimizer. Chọn **Expression compiler** và nhập `2 + 3 * (4 - 1)`
-để xem token, AST, stack bytecode và constant folding ra `PUSH 11`.
+## Rebuild to understand
 
-Đây là trình xem lại dữ liệu sau compile. AST/IR của Mini C được duyệt từ snapshot;
-optimizer dùng log biến đổi thực tế. Chưa có breakpoint hoặc dừng/tiếp tục tiến trình compiler.
+Recreate algorithms, tools, and systems in small, working implementations. Make their internal behavior visible and connect theory to code that can be inspected, tested, and explained.
 
-Tích hợp compiler khác: [hợp đồng adapter và hướng dẫn](docs/compiler-adapters.md).
-Chỉ đổi source compiler là chưa đủ: compiler hoặc adapter phải xuất các pha và
-trace mà bạn muốn quan sát theo protocol chung.
+## Measure and optimize
 
-```sh
-make test
-```
+Start with a correct baseline, identify bottlenecks, and improve performance, memory use, or code clarity. Compare results before and after each change, and document the tradeoffs.
 
-Các test mới cho Compiler Lab nằm ở `visualizer/tests/test_adapters.py`.
+## Learning workflow
+
+1. Study a concept and write down the key ideas.
+2. Build a minimal implementation.
+3. Inspect its behavior and verify correctness.
+4. Measure, optimize, and compare with the baseline.
+5. Record what worked, what failed, and what to explore next.
+
+## Topics and branches
+
+| Branch | Focus |
+| --- | --- |
+| `compiler/compiler_visualizer` | Compiler implementations and step-by-step visualization. |
+| `compiler/ai_compiler` | AI compiler concepts and experiments. |
+| `sdk` | SDK notes and implementation experiments. |
+| `isp` | ISP notes and implementation experiments. |
+
+Each topic can grow its own notes, examples, implementations, tests, and benchmarks. These are learning projects that evolve as my understanding develops.
+
+The Compiler Visualizer setup and usage instructions are in [its project guide](docs/compiler-visualizer.md).
