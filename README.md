@@ -4,7 +4,26 @@ Learn how vision-language models execute, rebuild small parts of their compilati
 
 **Initial workload:** image + question → text answer. Start with one image and batch size 1, then extend to multiple images and video. Multimodal means combining input modalities; multi-model experiments additionally cover running different models or pipeline components together.
 
-This branch currently contains a learning plan and reference index. The VLM implementations and benchmarks below are planned work.
+This branch contains the standalone MiniTensor learning compiler, examples, tests, and this VLM roadmap. Real VLM execution and benchmarks below are planned work.
+
+## Repository layout and quick start
+
+```text
+src/minitensor/   Tensor DSL, graph IR, optimization passes, loop IR, and C codegen
+examples/         Working tensor programs and error cases
+tests/          Correctness, optimization, and CLI tests
+```
+
+Requires Python 3, GCC, and Make; no third-party Python packages for MiniTensor.
+
+```sh
+make test
+make run
+make run ARGS=--emit=loops
+PYTHONPATH=src python3 -m minitensor --json examples/01_mlp_layer.mt
+```
+
+MiniTensor compares generated C with its reference interpreter. It is a small tensor compiler, not a pretrained VLM runtime. The visualizer is maintained separately on [`compiler/compiler_visualizer`](https://github.com/ntuanh/bring-knowledge-home/tree/compiler/compiler_visualizer).
 
 ## 1. Understand the execution pipeline
 
@@ -41,7 +60,7 @@ These are reference architectures, not a claim that every backend supports every
 ## 3. Build and optimize incrementally
 
 1. **Establish a reference.** Run one model through Transformers in evaluation mode with fixed inputs and deterministic decoding. Save processor outputs, tensor shapes, intermediate embeddings, and logits.
-2. **Rebuild a small graph.** Extend [MiniTensor](https://github.com/ntuanh/bring-knowledge-home/tree/compiler/compiler_visualizer/part2-ai-compiler) from `matmul/add/relu` toward normalization, softmax, reshape/transpose, and a small attention block. Validate each operation before assembling a toy VLM pipeline.
+2. **Rebuild a small graph.** Extend [MiniTensor](src/minitensor) from `matmul/add/relu` toward normalization, softmax, reshape/transpose, and a small attention block. Validate each operation before assembling a toy VLM pipeline.
 3. **Compile a real component.** Start with the vision encoder or projector using PyTorch compilation. Inspect captured graphs, generated kernels, unsupported operators, and recompilation. Treat prefill and stateful decode as separate experiments.
 4. **Optimize one change at a time.** Try legal fusion patterns, layout changes, tiling, reduced precision, and quantization. Sweep image resolution and context length to expose dynamic-shape behavior. Recheck numerical error and task quality after each change.
 5. **Add multimodal and multi-model workloads.** Test multiple images, then video frames. Compare per-component batching and device placement; measure memory contention, transfer costs, and scheduling when components or model variants run concurrently.
