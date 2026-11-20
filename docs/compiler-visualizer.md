@@ -1,34 +1,35 @@
-# Compiler Visualizer
+# Compiler Visualizer guide
 
-Học compiler bằng cách sửa source, xem từng pha và đối chiếu kết quả với source.
+Build and start the visualizer from this branch's root:
 
 ```sh
 make build
 make run
 ```
 
-Mở URL server in ra (mặc định tìm port trống trong 8100–8999). Cần Python 3,
-GCC, Make và GNU binutils trên Linux x86-64; không cần thư viện Python ngoài.
+The server selects a free port in 8100–8999 unless configured otherwise. Requirements: Python 3, GCC, Make, and GNU binutils on Linux x86-64.
 
-- **C Compiler**: tokens, cây AST, scopes, IR, tối ưu, assembly, GCC/ELF inspector và chạy chương trình.
-- **Compiler Lab**: giao diện chung cho compiler adapters; Back/Next, thanh chọn bước,
-  highlight source và snapshot từng pha. Có Mini C và compiler biểu thức độc lập.
-- **AI Compiler**: backend MiniTensor đã có parser, graph, fusion, loop IR và C codegen;
-  tab giao diện hiện còn là placeholder.
+## Explore a compilation
 
-Trong Compiler Lab, chọn **Mini C**, bật **O1**, rồi compile để xem các biến đổi
-before/after của optimizer. Chọn **Expression compiler** và nhập `2 + 3 * (4 - 1)`
-để xem token, AST, stack bytecode và constant folding ra `PUSH 11`.
+- **C Compiler:** edit a sample, then inspect tokens, AST, scopes, IR, optimization, assembly, execution, or GCC/ELF output.
+- **Compiler Lab:** choose Mini C, enable O1, and inspect optimizer before/after events. Choose the expression compiler and enter `2 + 3 * (4 - 1)` to trace stack bytecode and constant folding to `PUSH 11`.
 
-Đây là trình xem lại dữ liệu sau compile. AST/IR của Mini C được duyệt từ snapshot;
-optimizer dùng log biến đổi thực tế. Chưa có breakpoint hoặc dừng/tiếp tục tiến trình compiler.
+Back/Next navigation replays compilation results. Mini C AST/IR events traverse result snapshots; optimization events use actual transformation logs. Live process breakpoints are not implemented.
 
-Tích hợp compiler khác: [hợp đồng adapter và hướng dẫn](compiler-adapters.md).
-Chỉ đổi source compiler là chưa đủ: compiler hoặc adapter phải xuất các pha và
-trace mà bạn muốn quan sát theo protocol chung.
+## Source locations
+
+- `compilers/minic/`: C implementation, examples, and compiler tests.
+- `compilers/expression/compiler.py`: standalone adapter demonstration.
+- `visualizer/`: server, adapters, frontend, and API tests.
+- [`compiler/ai_compiler`](https://github.com/ntuanh/bring-knowledge-home/tree/compiler/ai_compiler): MiniTensor source, examples, tests, and VLM roadmap, maintained separately.
+
+## Extend and verify
+
+Follow the [adapter protocol](compiler-adapters.md) to connect an external compiler. It must export the stage outputs or events you want to inspect.
 
 ```sh
 make test
+python3 scripts/ui_check.py http://127.0.0.1:8100 /tmp/compiler-visualizer-screenshots
 ```
 
-Các test mới cho Compiler Lab nằm ở `visualizer/tests/test_adapters.py`.
+The browser checks require Firefox. Change the URL to the port printed by your running server.

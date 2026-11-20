@@ -36,6 +36,15 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual(session["stages"][4]["status"], "skip")
         self.assertEqual(session["stages"][5]["status"], "ok")
 
+    def test_c_examples_and_full_toolchain(self):
+        examples = pipelines.list_examples("c")
+        self.assertIn("01_minimal.c", [e["name"] for e in examples])
+        result = pipelines.compile_c("int main() { print(42); return 0; }", 1)
+        self.assertIsNone(result["failed_stage"])
+        self.assertTrue(result["assemble"]["ok"])
+        self.assertTrue(result["link"]["ok"])
+        self.assertEqual(result["run"]["stdout"].strip(), "42")
+
     def test_independent_expression_compiler(self):
         session = adapters.compile_session("expression", "2 + 3 * (4 - 1)")
         self.assertEqual(session["stages"][-1]["output"]["result"], 11)
@@ -68,7 +77,7 @@ class AdapterTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             config = Path(directory) / "adapters.json"
             config.write_text(json.dumps([{"id": "custom", "name": "Custom compiler",
-                "command": ["{python}", "{root}/visualizer/examples/expression_compiler.py", "{source}"]}]))
+                "command": ["{python}", "{root}/compilers/expression/compiler.py", "{source}"]}]))
             with patch.dict(os.environ, {"COMPILER_ADAPTERS": str(config)}):
                 self.assertTrue(all("command" not in c for c in adapters.catalog()))
                 result = adapters.compile_session("custom", "10 - 4")
@@ -98,6 +107,18 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual(responses[-1][1]["stages"][-1]["output"]["result"], 10)
         handler.read_json_body = lambda: {"compiler": "missing", "source": "1"}
         handler.do_POST()
+        self.assertEqual(responses[-1][0], 400)
+
+    def test_removed_ai_routes_do_not_depend_on_external_source(self):
+        handler = object.__new__(server.Handler)
+        responses = []
+        handler.send_json = lambda data, status=200: responses.append((status, data))
+        handler.path = "/api/ai/compile"
+        handler.read_json_body = lambda: {"source": "input x : [1]"}
+        handler.do_POST()
+        self.assertEqual(responses[-1][0], 404)
+        handler.path = "/api/examples?part=ai"
+        handler.do_GET()
         self.assertEqual(responses[-1][0], 400)
 
 

@@ -1,13 +1,13 @@
 # Top-level Makefile.
 #   make build   build the mini C compiler (build/minic)
-#   make test    run every test suite (minic, minitensor, visualizer API)
+#   make test    run every test suite (minic, visualizer API)
 #   make run     start the visualizer on a free port
 #   make clean   remove build output
 
 PYTHON ?= python3
-MINIC_DIR := part1-c-compiler/minic
+MINIC_DIR := compilers/minic
 
-.PHONY: build test test-minic test-minitensor test-api run clean check-tools
+.PHONY: build test test-minic test-api run clean check-tools
 
 build: check-tools
 	$(MAKE) --no-print-directory -C $(MINIC_DIR)
@@ -23,14 +23,11 @@ check-tools:
 		exit 1; \
 	fi
 
-test: build test-minic test-minitensor test-api
+test: build test-minic test-api
 	@echo "ALL TEST SUITES PASSED"
 
 test-minic: build
 	bash $(MINIC_DIR)/tests/run_tests.sh
-
-test-minitensor:
-	cd part2-ai-compiler && $(PYTHON) -m unittest discover -s tests -v
 
 test-api: build
 	$(PYTHON) -m unittest discover -s visualizer/tests -v

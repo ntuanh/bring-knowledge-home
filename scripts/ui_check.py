@@ -43,13 +43,6 @@ SCENARIOS = [
     ("c-gcc-tools", "part=c&example=04_functions.c&stage=link&sub=tools&tool=readelf -r", "document.querySelector('.subtab-body pre.code').textContent.includes('R_X86_64')", True),
     ("c-compare", "part=c&example=01_minimal.c&stage=link&sub=compare", "document.querySelectorAll('.subtab-body .asm-list').length == 3", True),
     ("c-run", "part=c&example=04_functions.c&stage=run", "document.querySelector('.stage-body pre.code').textContent.includes('120')", False),
-    ("ai-graph", "part=ai&example=01_mlp_layer.mt&stage=graph", "document.querySelectorAll('.graph-node').length >= 6", False),
-    ("ai-optimize", "part=ai&example=01_mlp_layer.mt&stage=opt", "document.querySelectorAll('.graph-node').length >= 6 && document.querySelectorAll('.log-entry').length >= 1", False),
-    ("ai-loop-ir", "part=ai&example=01_mlp_layer.mt&stage=loops", "document.querySelectorAll('.stage-body pre.code').length >= 2", False),
-    ("ai-c-code", "part=ai&example=01_mlp_layer.mt&stage=ccode", "document.querySelector('.stage-body pre.code').textContent.includes('for (')", False),
-    ("ai-run", "part=ai&example=01_mlp_layer.mt&stage=run", "document.querySelector('.stage-body').textContent.includes('match')", False),
-    ("ai-metrics", "part=ai&example=03_fusion_chain.mt&stage=metrics", "document.querySelectorAll('.bar-chart rect').length >= 6", False),
-    ("ai-shape-error", "part=ai&example=err_shape.mt", "document.querySelector('.stage-btn.fail') !== null", False),
 ]
 
 

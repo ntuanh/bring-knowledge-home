@@ -3,7 +3,7 @@
 // Provides: DOM helpers, the API client, the source editor (textarea with
 // line numbers and range highlighting), the pipeline bar, the per-stage panel
 // with its static explanation, the "Explain with AI" box, and a small safe
-// Markdown renderer. c_part.js and ai_part.js only describe their stages.
+// Markdown renderer. c_part.js describes the C compiler stages; lab.js renders adapter sessions.
 'use strict';
 
 const App = { health: null, parts: {}, controllers: {}, params: {} };

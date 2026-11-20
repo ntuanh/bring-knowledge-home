@@ -454,7 +454,7 @@
     id: 'c',
     defaultExample: '01_minimal.c',
     controls: (ctrl) => {
-      if (App.params.opt === '1' && App.params.part !== 'ai') optSelect.value = '1';
+      if (App.params.opt === '1') optSelect.value = '1';
       optSelect.addEventListener('change', () => ctrl.compile());
       return el('label', null, 'minic ', optSelect);
     },

@@ -20,7 +20,7 @@ def registry():
         {"id": "expression", "name": "Expression compiler (adapter demo)",
          "description": "Integer expressions → AST → stack bytecode → constant folding",
          "source": "2 + 3 * (4 - 1)",
-         "command": ["{python}", "{root}/visualizer/examples/expression_compiler.py", "{source}"]},
+         "command": ["{python}", "{root}/compilers/expression/compiler.py", "{source}"]},
     ]
     config = os.environ.get("COMPILER_ADAPTERS")
     if config:

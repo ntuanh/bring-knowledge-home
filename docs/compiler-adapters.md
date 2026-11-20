@@ -1,7 +1,7 @@
 # Compiler adapters v1
 
 Browser → `POST /api/compiler/compile` → adapter → compiler → session JSON → renderer chung.
-`GET /api/compilers` liệt kê compiler được cấu hình. Hai API C/AI cũ vẫn hoạt động.
+`GET /api/compilers` liệt kê compiler được cấu hình. Các API C cũ vẫn hoạt động. Source AI compiler nằm riêng trên nhánh `compiler/ai_compiler`.
 
 ## Thêm compiler
 
@@ -18,7 +18,7 @@ Tạo `my-compilers.json` (đường dẫn executable nên là tuyệt đối):
     "name": "My compiler",
     "description": "My language → IR → target",
     "source": "2 + 3 * 4",
-    "command": ["{python}", "{root}/visualizer/examples/expression_compiler.py", "{source}"]
+    "command": ["{python}", "{root}/compilers/expression/compiler.py", "{source}"]
   }
 ]
 ```
@@ -80,7 +80,7 @@ trong `visualizer/adapters.py`. Để thấy parser shift/reduce, symbol lookup 
 thứ tự chạy pass thật, cần instrument ngay trong compiler và ghi events tại đó.
 Mô tả rõ thứ tự bước trong `help` để người học phân biệt trace thật với duyệt kết quả.
 
-`visualizer/examples/expression_compiler.py` là compiler mẫu độc lập, không import
+`compilers/expression/compiler.py` là compiler mẫu độc lập, không import
 visualizer. Nó dùng Python parser để dựng AST cho tập con số nguyên và `+ - *`,
 tự sinh stack bytecode và log constant folding. Adapter Mini C chỉ compile đến
 assembly trong Lab; chạy chương trình và xem ELF nằm ở tab C Compiler.

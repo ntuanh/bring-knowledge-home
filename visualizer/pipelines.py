@@ -27,14 +27,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 MINIC = ROOT / "build" / "minic"
-C_EXAMPLES = ROOT / "part1-c-compiler" / "examples"
-AI_DIR = ROOT / "part2-ai-compiler"
-AI_EXAMPLES = AI_DIR / "examples"
+C_EXAMPLES = ROOT / "compilers" / "minic" / "examples"
 
 MAX_SOURCE_BYTES = 64 * 1024
 COMPILE_TIMEOUT = 5.0        # seconds, for compilers and binutils
 RUN_TIMEOUT = 2.0            # seconds, for the compiled user program
-AI_TIMEOUT = 30.0            # seconds, for the whole minitensor pipeline
 MAX_OUTPUT_BYTES = 64 * 1024         # cap for program / tool output sent to the UI
 MAX_JSON_BYTES = 32 * 1024 * 1024    # cap for compiler JSON (tokens + AST can be large)
 RUN_FILE_LIMIT = 1024 * 1024         # RLIMIT_FSIZE for user programs
@@ -151,10 +148,8 @@ def list_examples(part):
     """Example programs for the UI dropdown. The title is the first comment line."""
     if part == "c":
         directory, suffix, comment = C_EXAMPLES, ".c", "//"
-    elif part == "ai":
-        directory, suffix, comment = AI_EXAMPLES, ".mt", "#"
     else:
-        raise PipelineError("part must be 'c' or 'ai'")
+        raise PipelineError("part must be 'c'")
     examples = []
     if directory.is_dir():
         for path in sorted(directory.glob("*" + suffix)):
@@ -380,26 +375,3 @@ def gcc_pipeline(source, opt):
         result["compare"] = compare
         result["ok"] = True
         return result
-
-
-# --------------------------------------------------------------------------
-# Part 2: minitensor
-# --------------------------------------------------------------------------
-
-def compile_ai(source):
-    """Run the whole minitensor pipeline in a subprocess (so it can be timed out)."""
-    source = check_source(source)
-    with tempfile.TemporaryDirectory(prefix="cv-") as d:
-        with open(os.path.join(d, "model.mt"), "w", encoding="utf-8") as f:
-            f.write(source)
-        env = dict(os.environ)
-        env["PYTHONPATH"] = str(AI_DIR)
-        env["PYTHONDONTWRITEBYTECODE"] = "1"
-        r = run_tool([sys.executable, "-m", "minitensor", "--json", "model.mt"], d, timeout=AI_TIMEOUT,
-                     max_output=MAX_JSON_BYTES, env=env, display="python3 -m minitensor --json model.mt")
-        if r["timed_out"]:
-            raise PipelineError(f"minitensor timed out after {AI_TIMEOUT:.0f} s")
-        try:
-            return json.loads(r["stdout"])
-        except json.JSONDecodeError:
-            raise PipelineError("minitensor did not produce valid JSON: " + (r["stderr"] or r["stdout"])[-800:])

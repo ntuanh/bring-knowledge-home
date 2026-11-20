@@ -22,13 +22,13 @@
 #   2. compiles the same source with real gcc (plus a print() shim) and checks
 #      that gcc's program behaves the same (differential testing).
 #
-# The examples in part1-c-compiler/examples are also run through steps 1-2.
+# The examples in compilers/minic/examples are also run through steps 1-2.
 set -u
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/../../.." && pwd)"
 MINIC="$REPO/build/minic"
-EXAMPLES="$REPO/part1-c-compiler/examples"
+EXAMPLES="$REPO/compilers/minic/examples"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 

@@ -171,8 +171,6 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_json(pipelines.compile_c(body.get("source"), body.get("opt", 0)))
             elif url.path == "/api/c/gcc":
                 self.send_json(pipelines.gcc_pipeline(body.get("source"), body.get("opt", 0)))
-            elif url.path == "/api/ai/compile":
-                self.send_json(pipelines.compile_ai(body.get("source")))
             elif url.path == "/api/compiler/compile":
                 self.send_json(adapters.compile_session(body.get("compiler"), body.get("source"), body.get("opt", 0)))
             elif url.path == "/api/explain":
