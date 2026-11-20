@@ -35,4 +35,4 @@ Start with a correct baseline, identify bottlenecks, and improve performance, me
 
 Each topic can grow its own notes, examples, implementations, tests, and benchmarks. These are learning projects that evolve as my understanding develops.
 
-The Compiler Visualizer setup and usage instructions are in [its project guide](docs/compiler-visualizer.md).
+The Compiler Visualizer setup and usage instructions are in [its project guide](https://github.com/ntuanh/bring-knowledge-home/blob/compiler/compiler_visualizer/docs/compiler-visualizer.md).
