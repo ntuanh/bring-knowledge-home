@@ -1,0 +1,6 @@
+// Minimal program: precedence of * over +
+int main() {
+    int a = 10;
+    int b = 20;
+    return a + b * 2;
+}
